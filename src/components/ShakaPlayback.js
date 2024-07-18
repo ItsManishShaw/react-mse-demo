@@ -10,8 +10,8 @@ function ShakaPlayback() {
       style={{
         display: "flex",
         justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
+        //     alignItems: "center",
+        //     height: "100vh",
       }}
     >
       <div style={{ width: "80%", height: "80%" }}>

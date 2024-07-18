@@ -15,17 +15,7 @@ const ShakaPlayer = ({ src }) => {
     const controls = ui.getControls();
 
     const controlsConfig = {
-      controlPanelElements: [
-        "play_pause",
-        "rewind",
-        "fast_forward",
-        "spacer",
-        "time_and_duration",
-        "mute",
-        "volume",
-        "quality",
-        "fullscreen",
-      ],
+      controlPanelElements: ["play_pause", "fullscreen"],
     };
 
     ui.configure(controlsConfig);
