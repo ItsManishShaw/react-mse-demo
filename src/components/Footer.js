@@ -1,9 +1,9 @@
-import React from 'react';
+import React from "react";
 
- const Footer = () => {
+const Footer = () => {
   return (
-    <footer>
-      <p>&copy; 2024 React MSE Demo</p>
+    <footer className="footer">
+      <p className="footer-text">&copy; 2024 React MSE Demo</p>
     </footer>
   );
 };
