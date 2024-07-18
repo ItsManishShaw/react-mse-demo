@@ -1,0 +1,31 @@
+
+.controls {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center; 
+  align-items: center;   
+}
+
+.controls button,
+.controls input {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.controls button {
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+.controls button:hover {
+  background-color: #0056b3;
+}
+
+.controls input {
+  width: 60px;
+}

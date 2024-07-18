@@ -1,7 +1,7 @@
-//
 // src/components/VideoPlaybackPage.js
 import React, { useState } from 'react';
 import VideoPlayer from './VideoPlayer';
+import './VideoPlaybackPage.css';
 
 const VideoPlaybackPage = () => {
   const [videoSrc, setVideoSrc] = useState(
@@ -13,20 +13,27 @@ const VideoPlaybackPage = () => {
   const handleTypeChange = (e) => setVideoType(e.target.value);
 
   return (
-    <div>
+    <div className='container'>
       <h1>Video Playback</h1>
-      <label style={{ margin: '10px' }}>
-        Video URL:
-        <input type='text' value={videoSrc} onChange={handleSrcChange} />
-      </label>
-
-      <label style={{ margin: '10px' }}>
-        Type:
-        <select value={videoType} onChange={handleTypeChange}>
-          <option value='hls'>HLS</option>
-          <option value='dash'>DASH</option>
-        </select>
-      </label>
+      <div className='row'>
+        <label className='label'>
+          Video URL:
+          <input
+            type='text'
+            value={videoSrc}
+            onChange={handleSrcChange}
+            placeholder='Enter video URL'
+          />
+        </label>
+        <label className='label'>
+          Type:
+          <select value={videoType} onChange={handleTypeChange}>
+            <option value='hls'>HLS</option>
+            <option value='dash'>DASH</option>
+            <option value='shaka'>Shaka</option>
+          </select>
+        </label>
+      </div>
       <VideoPlayer src={videoSrc} type={videoType} />
     </div>
   );

@@ -2,6 +2,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Hls from 'hls.js';
 import dashjs from 'dashjs';
+import shaka from 'shaka-player';
+import 'shaka-player/dist/controls.css';
+import './VideoPlayer.css';
 
 const VideoPlayer = ({ src, type }) => {
   const videoRef = useRef(null);
@@ -11,11 +14,14 @@ const VideoPlayer = ({ src, type }) => {
   useEffect(() => {
     let hls;
     let dashPlayer;
+    let shakaPlayer;
+
+    const video = videoRef.current;
 
     if (type === 'hls' && Hls.isSupported()) {
       hls = new Hls();
       hls.loadSource(src);
-      hls.attachMedia(videoRef.current);
+      hls.attachMedia(video);
       hls.on(Hls.Events.ERROR, function (event, data) {
         if (data.fatal) {
           switch (data.type) {
@@ -37,9 +43,13 @@ const VideoPlayer = ({ src, type }) => {
       });
     } else if (type === 'dash') {
       dashPlayer = dashjs.MediaPlayer().create();
-      dashPlayer.initialize(videoRef.current, src, true);
+      dashPlayer.initialize(video, src, true);
+    } else if (type === 'shaka') {
+      shakaPlayer = new shaka.Player(video);
+      shakaPlayer.addEventListener('error', onError);
+      shakaPlayer.load(src).catch(onError);
     } else {
-      videoRef.current.src = src;
+      video.src = src;
     }
 
     return () => {
@@ -48,6 +58,9 @@ const VideoPlayer = ({ src, type }) => {
       }
       if (dashPlayer) {
         dashPlayer.reset();
+      }
+      if (shakaPlayer) {
+        shakaPlayer.destroy();
       }
     };
   }, [src, type]);
@@ -59,15 +72,17 @@ const VideoPlayer = ({ src, type }) => {
   const handlePause = () => {
     videoRef.current.pause();
   };
-
   const handlePlaybackRateChange = (e) => {
-    const value = e.target.value;
-    if (value === '' || isFinite(parseFloat(value))) {
+    const value = parseFloat(e.target.value);
+    if (!isNaN(value) && value >= 0.25 && value <= 16.0) {
       setPlaybackRate(value);
-      videoRef.current.playbackRate = parseFloat(value) || 1; // Use 1 if value is empty or not a number
+      videoRef.current.playbackRate = value;
+    } else if (e.target.value === '') {
+      setPlaybackRate('');
+    } else {
+      alert('Playback rate must be between 0.25 and 16');
     }
   };
-
   const handleSeek = (seconds) => {
     videoRef.current.currentTime += seconds;
   };
@@ -79,10 +94,14 @@ const VideoPlayer = ({ src, type }) => {
     }
   };
 
+  function onError(error) {
+    console.error('Error code', error.code, 'object', error);
+  }
+
   return (
     <div>
       <video ref={videoRef} controls style={{ width: '100%' }} />
-      <div style={{ marginTop: '10px' }}>
+      <div className='controls'>
         <button onClick={handlePlay}>Play</button>
         <button onClick={handlePause}>Pause</button>
         <label>
@@ -91,7 +110,6 @@ const VideoPlayer = ({ src, type }) => {
             type='text'
             value={playbackRate}
             onChange={handlePlaybackRateChange}
-            style={{ width: '50px', marginLeft: '5px' }}
           />
         </label>
         <button onClick={() => handleSeek(-10)}>-10s</button>
@@ -102,7 +120,6 @@ const VideoPlayer = ({ src, type }) => {
             type='number'
             value={seekPosition}
             onChange={(e) => setSeekPosition(e.target.value)}
-            style={{ width: '50px', marginLeft: '5px' }}
           />
         </label>
         <button onClick={handleSeekTo}>Seek</button>
