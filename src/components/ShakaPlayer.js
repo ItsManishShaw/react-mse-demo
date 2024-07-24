@@ -1,6 +1,6 @@
-import React, { useRef, useEffect } from 'react';
-import shaka from 'shaka-player/dist/shaka-player.ui.js';
-// import 'shaka-player/dist/controls.css';
+import React, { useRef, useEffect } from "react";
+import shaka from "shaka-player/dist/shaka-player.ui.js";
+import "shaka-player/dist/controls.css";
 
 const ShakaPlayer = ({ src }) => {
   const videoRef = useRef(null);
@@ -14,17 +14,27 @@ const ShakaPlayer = ({ src }) => {
     const ui = new shaka.ui.Overlay(player, videoContainer, video);
 
     const controlsConfig = {
-      controlPanelElements: ['play_pause', 'fullscreen'],
+      controlPanelElements: [
+        "play_pause",
+        "time_and_duration",
+        "spacer",
+        "rewind",
+        "fast_forward",
+        "spacer",
+        "quality",
+        "playback_rate",
+        "fullscreen",
+      ],
     };
 
     ui.configure(controlsConfig);
 
-    player.addEventListener('error', onError);
+    player.addEventListener("error", onError);
 
     async function loadVideo() {
       try {
         await player.load(src);
-        console.log('The video has now been loaded!');
+        console.log("The video has now been loaded!");
       } catch (e) {
         onError(e);
       }
@@ -39,18 +49,18 @@ const ShakaPlayer = ({ src }) => {
   }, [src]);
 
   function onError(error) {
-    console.error('Error code', error.code, 'object', error);
+    console.error("Error code", error.code, "object", error);
   }
 
   return (
     <div
       ref={videoContainerRef}
-      className='video-container'
-      style={{ width: '100%', height: '100%' }}
+      className="video-container"
+      style={{ width: "100%", height: "100%" }}
     >
       <video
         ref={videoRef}
-        style={{ width: '100%', height: '100%' }}
+        style={{ width: "100%", height: "100%" }}
         controls={false}
       ></video>
     </div>
